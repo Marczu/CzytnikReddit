@@ -9,6 +9,7 @@ import com.marcinmejner.czytnikreddit.model.Post
 import com.marcinmejner.czytnikreddit.model.entry.Entry
 import com.marcinmejner.czytnikreddit.utils.BASE_URL
 import com.marcinmejner.czytnikreddit.utils.ExtractXML
+import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,12 +19,27 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
 
+    //vars
+    lateinit var posts: ArrayList<Post>
+
+    private lateinit var retrofit: Retrofit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val retrofit = Retrofit.Builder()
+        retrofitSetup{complete ->
+            if(complete){
+                val customListAdapter = CustomListAdapter(this@MainActivity, R.layout.card_layout_main, posts)
+                listView.adapter = customListAdapter
+            }
+        }
+
+
+    }
+
+    fun retrofitSetup(complete: (Boolean) -> Unit){
+        retrofit = Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(SimpleXmlConverterFactory.create())
                 .build()
@@ -37,16 +53,10 @@ class MainActivity : AppCompatActivity() {
                 val entrys: List<Entry>? = response.body()?.entrys
                 Log.d(TAG, "onResponse: entrysss: " + response.body()?.entrys)
 
-//                Log.d(TAG, "onResponse: author name: " + entrys?.get(0)?.author)
-//                Log.d(TAG, "onResponse: updated: " + entrys?.get(0)?.updated)
-//                Log.d(TAG, "onResponse: title: " + entrys?.get(0)?.title)
-
-
-                var posts = ArrayList<Post>()
+                posts = ArrayList()
                 for (i in 0 until entrys!!.size) {
                     val extractXml1 = ExtractXML(entrys[i].content!!, "<a href=")
                     var postContent: ArrayList<String> = extractXml1.start()
-
                     var extractXml2 = ExtractXML(entrys[i].content!!, "<img src=")
 
                     try {
@@ -77,16 +87,16 @@ class MainActivity : AppCompatActivity() {
                             "Title : ${posts[j].title} \n" +
                             "Author : ${posts[j].author} \n" +
                             "Date Updated : ${posts[j].date_updated}")
-                            }
+                }
+                complete(true)
             }
 
             override fun onFailure(call: Call<Feed>, t: Throwable) {
                 Log.e(TAG, "onFailure: Unable to retrieve RSS: " + t.message)
                 Toast.makeText(this@MainActivity, "An Error Occured", Toast.LENGTH_SHORT).show()
-
+                complete(false)
             }
         })
-
     }
 
 }
