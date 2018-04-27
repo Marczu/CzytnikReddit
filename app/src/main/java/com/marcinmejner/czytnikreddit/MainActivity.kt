@@ -1,23 +1,21 @@
 package com.marcinmejner.czytnikreddit
 
-import android.app.PendingIntent.getActivity
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import com.marcinmejner.czytnikreddit.model.Feed
+import com.marcinmejner.czytnikreddit.model.entry.Entry
 import com.marcinmejner.czytnikreddit.utils.BASE_URL
+import com.marcinmejner.czytnikreddit.utils.ExtractXML
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 
-
-
-
 class MainActivity : AppCompatActivity() {
-
+    private val TAG = "MainActivity"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,14 +28,57 @@ class MainActivity : AppCompatActivity() {
                 .build()
 
         val feedAPI = retrofit.create(FeedAPI::class.java)
-
         val call = feedAPI.getFeed
 
         call.enqueue(object : Callback<Feed> {
             override fun onResponse(call: Call<Feed>, response: Response<Feed>) {
-                Log.d(TAG, "onResponse: feed: " + response.body()?.entrys)
-                Log.d(TAG, "onResponse: feed: " + response.body()?.toString())
-                Log.d(TAG, "onResponse: Server Response: " + response.toString())
+
+                val entrys: List<Entry>? = response.body()?.entrys
+//                Log.d(TAG, "onResponse: entrys: " + response.body()?.entrys)
+
+//                Log.d(TAG, "onResponse: author name: " + entrys?.get(0)?.author)
+//                Log.d(TAG, "onResponse: updated: " + entrys?.get(0)?.updated)
+//                Log.d(TAG, "onResponse: title: " + entrys?.get(0)?.title)
+
+                for (i in 0 until entrys!!.size) {
+                    val extractXml1 = ExtractXML(entrys[i].content!!, "<a href=")
+                    var postContent: ArrayList<String> = extractXml1.start()
+
+                    var extractXml2 = ExtractXML(entrys[i].content!!, "<img src=")
+
+                    try {
+                        postContent.add(extractXml2.start()[0])
+                    } catch (e: KotlinNullPointerException) {
+                        Log.d(TAG, "onResponse: NullPointerException (thumbnail) : ${e.localizedMessage}")
+                        postContent.add("")
+                    }catch (e: IndexOutOfBoundsException){
+                        postContent.add("tunicniema")
+                        Log.d(TAG, "onResponse: IndexOutOfBoundsException (thumbnail) : ${e.localizedMessage}")
+
+                    }
+
+                    Log.d(TAG, "onResponse: tralalala : $postContent")
+
+
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             }
 
             override fun onFailure(call: Call<Feed>, t: Throwable) {
@@ -46,80 +87,12 @@ class MainActivity : AppCompatActivity() {
 
             }
         })
+
     }
 
-    companion object {
-
-
-        private val TAG = "MainActivity"
-
-        private val BASE_URL = "https://www.reddit.com/r/"
-    }
 }
 
 
 
 
-
-
-//    private val TAG = "MainActivity"
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
-//
-//
-//        val retrofit = Retrofit.Builder()
-//                .baseUrl(BASE_URL)
-//                .addConverterFactory(SimpleXmlConverterFactory.create())
-//                .build()
-//
-//        val feedApi = retrofit.create<FeedAPI>(FeedAPI::class.java!!)
-//
-//        val call = feedApi.getFeed()
-//
-//
-//
-//
-////        call.enqueue(object : Callback<Feed> {
-////            override fun onResponse(call: Call<Feed>, response: retrofit2.Response<Feed>) {
-////                Log.d(TAG, "onResponse: ${response.body()?.entrys}")
-////                Log.d(TAG, "onResponse: ${response.body()?.title}")
-////                Log.d(TAG, "onResponse: SERVER RESPONSE ${response.toString()}")
-////
-////            }
-////
-////            override fun onFailure(call: Call<Feed>, t: Throwable) {
-////                Log.d(TAG, "onFailure: unable to rtrive RSS ${t.localizedMessage}")
-////            }
-////        })
-//
-//
-//
-//
-//
-//
-//        call.enqueue(object : Callback<Feed> {
-//            override fun onResponse(call: Call<Feed>?, response: Response<Feed>?) {
-//                Log.d(TAG, "onResponse: ${response?.body()?.entrys}")
-//                Log.d(TAG, "onResponse: ${response?.body()?.title}")
-//                Log.d(TAG, "onResponse: SERVER RESPONSE ${response.toString()}")
-//            }
-//
-//            override fun onFailure(call: Call<Feed>?, t: Throwable?) {
-//                Log.d(TAG, "onFailure: unable to rtrive RSS ${t?.localizedMessage}")
-//            }
-//
-//
-//        })
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//    }
 

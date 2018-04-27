@@ -8,7 +8,7 @@ import retrofit2.http.GET
 
 interface FeedAPI {
 
-    @get:GET("androiddev/.rss")
+    @get:GET("cats/.rss")
     val getFeed: Call<Feed>
 
 }
