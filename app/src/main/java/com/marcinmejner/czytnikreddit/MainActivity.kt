@@ -3,6 +3,7 @@ package com.marcinmejner.czytnikreddit
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.EditText
 import android.widget.Toast
 import com.marcinmejner.czytnikreddit.model.Feed
 import com.marcinmejner.czytnikreddit.model.Post
@@ -21,6 +22,9 @@ class MainActivity : AppCompatActivity() {
 
     //vars
     lateinit var posts: ArrayList<Post>
+    var currentFeed: String? = ""
+
+
 
     private lateinit var retrofit: Retrofit
 
@@ -35,6 +39,26 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        btnRefreshFeed.setOnClickListener {
+            var feedName = etFeedName.text.toString()
+            if(feedName.isNotEmpty()){
+                currentFeed = feedName
+                retrofitSetup{complete ->
+                    if(complete){
+                        val customListAdapter = CustomListAdapter(this@MainActivity, R.layout.card_layout_main, posts)
+                        listView.adapter = customListAdapter
+                    }
+                }
+            }else{
+                retrofitSetup{complete ->
+                    if(complete){
+                        val customListAdapter = CustomListAdapter(this@MainActivity, R.layout.card_layout_main, posts)
+                        listView.adapter = customListAdapter
+                    }
+                }
+            }
+        }
+
 
     }
 
@@ -45,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                 .build()
 
         val feedAPI = retrofit.create(FeedAPI::class.java)
-        val call = feedAPI.getFeed
+        val call = feedAPI.getFeed(currentFeed!!)
 
         call.enqueue(object : Callback<Feed> {
             override fun onResponse(call: Call<Feed>, response: Response<Feed>) {
@@ -72,7 +96,7 @@ class MainActivity : AppCompatActivity() {
                     val lastPosition = postContent.size -1
                     posts.add(Post(
                             entrys[i].title!!,
-                            entrys[i].author!!.name!!,
+                            entrys[i].author!!.name!!.replace("/u/", ""),
                             entrys[i].updated!!,
                             postContent[0],
                             postContent[lastPosition]
