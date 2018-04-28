@@ -1,4 +1,4 @@
-package com.marcinmejner.czytnikreddit
+package com.marcinmejner.czytnikreddit.Adapters
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.marcinmejner.czytnikreddit.R
 import com.marcinmejner.czytnikreddit.model.Post
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache
 import com.nostra13.universalimageloader.core.DisplayImageOptions

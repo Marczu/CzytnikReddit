@@ -3,8 +3,9 @@ package com.marcinmejner.czytnikreddit
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.EditText
 import android.widget.Toast
+import com.marcinmejner.czytnikreddit.Adapters.CustomListAdapter
+import com.marcinmejner.czytnikreddit.R.id.listView
 import com.marcinmejner.czytnikreddit.model.Feed
 import com.marcinmejner.czytnikreddit.model.Post
 import com.marcinmejner.czytnikreddit.model.entry.Entry
