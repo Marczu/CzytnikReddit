@@ -1,5 +1,15 @@
 <resources>
     <string name="app_name">Czytnik Reddit</string>
+
+    //Intent Extras
+    <string name="post_url">post_url</string>
+    <string name="thumbnail_Url">thumbnail_Url</string>
+    <string name="title">title</string>
+    <string name="author">author</string>
+    <string name="date_updated">date_updated</string>
+
+
+
 </resources>
 
 

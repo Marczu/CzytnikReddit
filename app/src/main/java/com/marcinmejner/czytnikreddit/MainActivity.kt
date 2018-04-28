@@ -1,11 +1,12 @@
 package com.marcinmejner.czytnikreddit
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import com.marcinmejner.czytnikreddit.Adapters.CustomListAdapter
-import com.marcinmejner.czytnikreddit.R.id.listView
+import com.marcinmejner.czytnikreddit.Retfofit.FeedAPI
 import com.marcinmejner.czytnikreddit.model.Feed
 import com.marcinmejner.czytnikreddit.model.Post
 import com.marcinmejner.czytnikreddit.model.entry.Entry
@@ -25,45 +26,29 @@ class MainActivity : AppCompatActivity() {
     lateinit var posts: ArrayList<Post>
     var currentFeed: String? = ""
 
-
-
     private lateinit var retrofit: Retrofit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        retrofitSetup{complete ->
-            if(complete){
-                val customListAdapter = CustomListAdapter(this@MainActivity, R.layout.card_layout_main, posts)
-                listView.adapter = customListAdapter
-            }
-        }
+        retrofitSetup()
 
         btnRefreshFeed.setOnClickListener {
             var feedName = etFeedName.text.toString()
             if(feedName.isNotEmpty()){
                 currentFeed = feedName
-                retrofitSetup{complete ->
-                    if(complete){
-                        val customListAdapter = CustomListAdapter(this@MainActivity, R.layout.card_layout_main, posts)
-                        listView.adapter = customListAdapter
-                    }
+                retrofitSetup()
                 }
-            }else{
-                retrofitSetup{complete ->
-                    if(complete){
+            else{
+                retrofitSetup()
                         val customListAdapter = CustomListAdapter(this@MainActivity, R.layout.card_layout_main, posts)
                         listView.adapter = customListAdapter
-                    }
                 }
             }
-        }
-
-
     }
 
-    fun retrofitSetup(complete: (Boolean) -> Unit){
+    fun retrofitSetup(){
         retrofit = Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(SimpleXmlConverterFactory.create())
@@ -113,13 +98,31 @@ class MainActivity : AppCompatActivity() {
                             "Author : ${posts[j].author} \n" +
                             "Date Updated : ${posts[j].date_updated}")
                 }
-                complete(true)
+                val customListAdapter = CustomListAdapter(this@MainActivity, R.layout.card_layout_main, posts)
+                listView.adapter = customListAdapter
+
+                /*Wysyłamy dane z kliknietego posta do CommentsActivity*/
+                listView.setOnItemClickListener { adapterView, view, i, l ->
+                    Log.d(TAG, "onResponse: clicked on ${posts[i].author}")
+                    val intent = Intent(this@MainActivity, CommentsActivity::class.java)
+
+                    intent.putExtra(getString(R.string.post_url), posts[i].postURL )
+                    intent.putExtra(getString(R.string.thumbnail_Url), posts[i].thumbnailURL )
+                    intent.putExtra(getString(R.string.title), posts[i].title )
+                    intent.putExtra(getString(R.string.author), posts[i].author )
+                    intent.putExtra(getString(R.string.date_updated), posts[i].date_updated )
+
+                    startActivity(intent)
+//
+                }
+
+
             }
 
             override fun onFailure(call: Call<Feed>, t: Throwable) {
                 Log.e(TAG, "onFailure: Unable to retrieve RSS: " + t.message)
                 Toast.makeText(this@MainActivity, "An Error Occured", Toast.LENGTH_SHORT).show()
-                complete(false)
+
             }
         })
     }
