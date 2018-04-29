@@ -1,4 +1,4 @@
-package com.marcinmejner.czytnikreddit.Adapters
+package com.marcinmejner.czytnikreddit.adapters
 
 import android.content.Context
 import android.graphics.Bitmap

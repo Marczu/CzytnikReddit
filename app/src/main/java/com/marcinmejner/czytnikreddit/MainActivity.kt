@@ -5,33 +5,31 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.marcinmejner.czytnikreddit.Adapters.CustomListAdapter
-import com.marcinmejner.czytnikreddit.Retfofit.FeedAPI
-import com.marcinmejner.czytnikreddit.di.DaggerNetworkComponent
-import com.marcinmejner.czytnikreddit.di.NetworkComponent
+import com.marcinmejner.czytnikreddit.adapters.CustomListAdapter
+import com.marcinmejner.czytnikreddit.api.FeedAPI
 import com.marcinmejner.czytnikreddit.model.Feed
 import com.marcinmejner.czytnikreddit.model.Post
 import com.marcinmejner.czytnikreddit.model.entry.Entry
-import com.marcinmejner.czytnikreddit.utils.BASE_URL
 import com.marcinmejner.czytnikreddit.utils.ExtractXML
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
 
+//    @Inject
+//    lateinit var retrofi: Retrofit
+
     @Inject
-    lateinit var retrofi: Retrofit
+    lateinit var feedAPI: FeedAPI
 
     //vars
     lateinit var posts: ArrayList<Post>
     var currentFeed: String? = ""
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,21 +43,19 @@ class MainActivity : AppCompatActivity() {
 
         btnRefreshFeed.setOnClickListener {
             var feedName = etFeedName.text.toString()
-            if(feedName.isNotEmpty()){
+            if (feedName.isNotEmpty()) {
                 currentFeed = feedName
                 retrofitSetup()
-                }
-            else{
+            } else {
                 retrofitSetup()
-                        val customListAdapter = CustomListAdapter(this@MainActivity, R.layout.card_layout_main, posts)
-                        listView.adapter = customListAdapter
-                }
+                val customListAdapter = CustomListAdapter(this@MainActivity, R.layout.card_layout_main, posts)
+                listView.adapter = customListAdapter
             }
+        }
     }
 
-    fun retrofitSetup(){
+    fun retrofitSetup() {
 
-        val feedAPI = retrofi.create(FeedAPI::class.java)
         val call = feedAPI.getFeed(currentFeed!!)
 
         call.enqueue(object : Callback<Feed> {
@@ -84,7 +80,7 @@ class MainActivity : AppCompatActivity() {
                         Log.d(TAG, "onResponse: IndexOutOfBoundsException (thumbnail) : ${e.localizedMessage}")
 
                     }
-                    val lastPosition = postContent.size -1
+                    val lastPosition = postContent.size - 1
                     posts.add(Post(
                             entrys[i].title!!,
                             entrys[i].author!!.name!!.replace("/u/", ""),
@@ -95,7 +91,7 @@ class MainActivity : AppCompatActivity() {
                     Log.d(TAG, "onResponse: tralalala : $postContent")
 
                 }
-                for(j in 0 until posts.size){
+                for (j in 0 until posts.size) {
                     Log.d(TAG, "onResponse dane z XMLa: \n" +
                             "PostURL : ${posts[j].postURL} \n" +
                             "ThumbnailUrl : ${posts[j].thumbnailURL} \n" +
@@ -111,11 +107,11 @@ class MainActivity : AppCompatActivity() {
                     Log.d(TAG, "onResponse: clicked on ${posts[i].author}")
                     val intent = Intent(this@MainActivity, CommentsActivity::class.java)
 
-                    intent.putExtra(getString(R.string.post_url), posts[i].postURL )
-                    intent.putExtra(getString(R.string.thumbnail_Url), posts[i].thumbnailURL )
-                    intent.putExtra(getString(R.string.title), posts[i].title )
-                    intent.putExtra(getString(R.string.author), posts[i].author )
-                    intent.putExtra(getString(R.string.date_updated), posts[i].date_updated )
+                    intent.putExtra(getString(R.string.post_url), posts[i].postURL)
+                    intent.putExtra(getString(R.string.thumbnail_Url), posts[i].thumbnailURL)
+                    intent.putExtra(getString(R.string.title), posts[i].title)
+                    intent.putExtra(getString(R.string.author), posts[i].author)
+                    intent.putExtra(getString(R.string.date_updated), posts[i].date_updated)
 
                     startActivity(intent)
 //

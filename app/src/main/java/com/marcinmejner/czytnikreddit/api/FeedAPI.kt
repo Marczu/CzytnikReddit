@@ -1,4 +1,4 @@
-package com.marcinmejner.czytnikreddit.Retfofit
+package com.marcinmejner.czytnikreddit.api
 
 import com.marcinmejner.czytnikreddit.model.Feed
 import retrofit2.Call

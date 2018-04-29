@@ -7,7 +7,7 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(modules = arrayOf(
-
+        FeedModule::class,
         NetworkModule::class)
 )
 interface NetworkComponent {
