@@ -8,6 +8,9 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
+import com.marcinmejner.czytnikreddit.api.FeedAPI
+import com.marcinmejner.czytnikreddit.model.Feed
+import com.marcinmejner.czytnikreddit.utils.BASE_URL
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache
 import com.nostra13.universalimageloader.core.DisplayImageOptions
 import com.nostra13.universalimageloader.core.ImageLoader
@@ -17,8 +20,10 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener
 import kotlinx.android.synthetic.main.activity_comments.*
+import retrofit2.Call
+import javax.inject.Inject
 
-class CommentsActivity: AppCompatActivity() {
+class CommentsActivity : AppCompatActivity() {
     private val TAG = "CommentsActivity"
 
     companion object {
@@ -30,16 +35,25 @@ class CommentsActivity: AppCompatActivity() {
         var defaultImage: Int = 0
     }
 
+    var currentFeed: String = ""
+
+    @Inject
+    lateinit var feedAPI: FeedAPI
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comments)
         Log.d(TAG, "onCreate: ")
 
+        RedApp.component.inject(this)
+
         initPost()
+
+        val call = feedAPI.getFeed(currentFeed)
 
     }
 
-    fun initPost(){
+    fun initPost() {
         postURL = intent.getStringExtra(getString(R.string.post_url))
         postThumbnailUrl = intent.getStringExtra(getString(R.string.thumbnail_Url))
         stringPostTitle = intent.getStringExtra(getString(R.string.title))
@@ -52,9 +66,19 @@ class CommentsActivity: AppCompatActivity() {
 
         setupImageLoader()
         displayImage(postThumbnailUrl, postThumbnail, postLoadingProgressBar)
+
+        val splitUrl = postURL.split(BASE_URL)
+
+        try {
+            currentFeed = splitUrl[1]
+            Log.d(TAG, "initPost: splitted String: $currentFeed")
+        } catch (e: ArrayIndexOutOfBoundsException) {
+            Log.d(TAG, "initPost: ArrayIndexOutOfBoundsException ${e.message}")
+        }
+
     }
 
-    fun displayImage(imageUrl: String, imageView: ImageView, progressBar: ProgressBar){
+    fun displayImage(imageUrl: String, imageView: ImageView, progressBar: ProgressBar) {
         val imageLoader = ImageLoader.getInstance()
 
         val defaultImage = this@CommentsActivity.resources.getIdentifier("@drawable/reddit_default", null, this@CommentsActivity.packageName)
