@@ -13,6 +13,7 @@ import com.marcinmejner.czytnikreddit.RedApp
 import com.marcinmejner.czytnikreddit.api.FeedAPI
 import com.marcinmejner.czytnikreddit.model.Feed
 import com.marcinmejner.czytnikreddit.utils.BASE_URL
+import com.marcinmejner.czytnikreddit.utils.ExtractXML
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache
 import com.nostra13.universalimageloader.core.DisplayImageOptions
 import com.nostra13.universalimageloader.core.ImageLoader
@@ -67,6 +68,8 @@ class CommentsActivity : AppCompatActivity() {
                 val entrys = response.body()?.entrys
                 for (i in 0 until entrys!!.size) {
                     Log.d(TAG, "onResponse: ${entrys[i]} ")
+                    val extract = ExtractXML(entrys[i].content!!, "<div class=\"md\"><p>", "</p>" )
+                    Log.d(TAG, "onResponse: ${extract.start()}")
                 }
 
 
