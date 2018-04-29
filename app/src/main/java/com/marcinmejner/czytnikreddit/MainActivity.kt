@@ -7,6 +7,9 @@ import android.util.Log
 import android.widget.Toast
 import com.marcinmejner.czytnikreddit.Adapters.CustomListAdapter
 import com.marcinmejner.czytnikreddit.Retfofit.FeedAPI
+import com.marcinmejner.czytnikreddit.di.AppModule
+import com.marcinmejner.czytnikreddit.di.DaggerNetworkComponent
+import com.marcinmejner.czytnikreddit.di.NetworkComponent
 import com.marcinmejner.czytnikreddit.model.Feed
 import com.marcinmejner.czytnikreddit.model.Post
 import com.marcinmejner.czytnikreddit.model.entry.Entry
@@ -18,9 +21,13 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
+
+    @Inject
+    lateinit var retrofi: Retrofit
 
     //vars
     lateinit var posts: ArrayList<Post>
@@ -31,6 +38,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
+        val component: NetworkComponent = DaggerNetworkComponent.builder()
+                .appModule(AppModule(this))
+                .build()
+
+
+
+        component.inject(this)
 
         retrofitSetup()
 
@@ -54,7 +70,7 @@ class MainActivity : AppCompatActivity() {
                 .addConverterFactory(SimpleXmlConverterFactory.create())
                 .build()
 
-        val feedAPI = retrofit.create(FeedAPI::class.java)
+        val feedAPI = retrofi.create(FeedAPI::class.java)
         val call = feedAPI.getFeed(currentFeed!!)
 
         call.enqueue(object : Callback<Feed> {
