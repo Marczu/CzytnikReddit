@@ -4,10 +4,13 @@ import android.util.Log
 
 class ExtractXML(
         val xml: String,
-        val tag: String
+        val tag: String,
+        val endtag: String = "<p>"
         ) {
 
     private val TAG = "ExtractXML"
+
+
 
     fun start(): ArrayList<String>{
         var result = ArrayList<String>()

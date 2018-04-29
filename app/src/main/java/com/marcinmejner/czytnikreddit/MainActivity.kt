@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import com.marcinmejner.czytnikreddit.adapters.CustomListAdapter
 import com.marcinmejner.czytnikreddit.api.FeedAPI
+import com.marcinmejner.czytnikreddit.comments.CommentsActivity
 import com.marcinmejner.czytnikreddit.model.Feed
 import com.marcinmejner.czytnikreddit.model.Post
 import com.marcinmejner.czytnikreddit.model.entry.Entry
@@ -15,7 +16,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
