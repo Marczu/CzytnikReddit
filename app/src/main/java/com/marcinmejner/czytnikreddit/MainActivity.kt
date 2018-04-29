@@ -7,7 +7,6 @@ import android.util.Log
 import android.widget.Toast
 import com.marcinmejner.czytnikreddit.Adapters.CustomListAdapter
 import com.marcinmejner.czytnikreddit.Retfofit.FeedAPI
-import com.marcinmejner.czytnikreddit.di.AppModule
 import com.marcinmejner.czytnikreddit.di.DaggerNetworkComponent
 import com.marcinmejner.czytnikreddit.di.NetworkComponent
 import com.marcinmejner.czytnikreddit.model.Feed
@@ -33,20 +32,14 @@ class MainActivity : AppCompatActivity() {
     lateinit var posts: ArrayList<Post>
     var currentFeed: String? = ""
 
-    private lateinit var retrofit: Retrofit
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        RedApp.component.inject(this)
 
-        val component: NetworkComponent = DaggerNetworkComponent.builder()
-                .appModule(AppModule(this))
-                .build()
-
-
-
-        component.inject(this)
 
         retrofitSetup()
 
@@ -65,10 +58,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun retrofitSetup(){
-        retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(SimpleXmlConverterFactory.create())
-                .build()
 
         val feedAPI = retrofi.create(FeedAPI::class.java)
         val call = feedAPI.getFeed(currentFeed!!)
