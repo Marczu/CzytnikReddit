@@ -17,7 +17,7 @@ data class Entry(
 
         @set:Element(name = "id")
         @get:Element(name = "id")
-        private var id: String? = null,
+        var id: String? = null,
 
         @set:Element(name = "title")
         @get:Element(name = "title")

@@ -6,10 +6,13 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.Toast
 import com.marcinmejner.czytnikreddit.R
+import com.marcinmejner.czytnikreddit.R.id.*
 import com.marcinmejner.czytnikreddit.RedApp
+import com.marcinmejner.czytnikreddit.adapters.CommentsListAdapter
 import com.marcinmejner.czytnikreddit.api.FeedAPI
 import com.marcinmejner.czytnikreddit.model.Feed
 import com.marcinmejner.czytnikreddit.utils.BASE_URL
@@ -23,6 +26,7 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener
 import kotlinx.android.synthetic.main.activity_comments.*
+import kotlinx.android.synthetic.main.comments_layout.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -40,9 +44,13 @@ class CommentsActivity : AppCompatActivity() {
         var defaultImage: Int = 0
     }
 
+    var progressbar: ProgressBar? = null
+
+
+
     //vars
     var currentFeed: String = ""
-    lateinit var comments: ArrayList<Comment>
+    var comments: ArrayList<Comment> = ArrayList()
 
     @Inject
     lateinit var feedAPI: FeedAPI
@@ -51,6 +59,10 @@ class CommentsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comments)
         Log.d(TAG, "onCreate: ")
+
+        progressbar = findViewById(R.id.commentsProgressBar)
+        progressbar?.visibility = View.VISIBLE
+        commentsProgressBar.visibility = View.VISIBLE
 
         RedApp.component.inject(this)
 
@@ -70,9 +82,37 @@ class CommentsActivity : AppCompatActivity() {
                     Log.d(TAG, "onResponse: ${entrys[i]} ")
                     val extract = ExtractXML(entrys[i].content!!, "<div class=\"md\"><p>", "</p>" )
                     Log.d(TAG, "onResponse: ${extract.start()}")
+                    val commentDetails = extract.start()
+
+                    try{
+                        comments.add(Comment(
+                                commentDetails[0],
+                                entrys[i].author?.name!!,
+                                entrys[i].updated!!,
+                                entrys[i].id!!))
+                    }catch (e: IndexOutOfBoundsException){
+                        comments.add(Comment(
+                                "Error reading comment",
+                                "None",
+                                "None",
+                                "None"))
+
+                        Log.d(TAG, "onResponse: ArrayIndexOutOfBoundsException ${e.message} ")
+                    }catch (e: NullPointerException){
+                        comments.add(Comment(
+                                commentDetails[0],
+                                "None",
+                                entrys[i].updated!!,
+                                entrys[i].id!!))
+
+                        Log.d(TAG, "onResponse: NullPointerException : ${e.message}")
+                    }
                 }
+                val adapter = CommentsListAdapter(this@CommentsActivity, R.layout.comments_layout, comments)
+                commentsListView.adapter = adapter
 
-
+                progressbar?.visibility = View.INVISIBLE
+                commentsProgressBar.visibility = View.INVISIBLE
             }
 
             override fun onFailure(call: Call<Feed>, t: Throwable) {
