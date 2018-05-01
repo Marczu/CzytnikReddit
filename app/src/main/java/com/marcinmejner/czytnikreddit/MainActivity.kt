@@ -105,16 +105,17 @@ class MainActivity : AppCompatActivity() {
                 /*Wysyłamy dane z kliknietego posta do CommentsActivity*/
                 listView.setOnItemClickListener { adapterView, view, i, l ->
                     Log.d(TAG, "onResponse: clicked on ${posts[i].author}")
-                    val intent = Intent(this@MainActivity, CommentsActivity::class.java)
+                    Intent(this@MainActivity, CommentsActivity::class.java).apply {
 
-                    intent.putExtra(getString(R.string.post_url), posts[i].postURL)
-                    intent.putExtra(getString(R.string.thumbnail_Url), posts[i].thumbnailURL)
-                    intent.putExtra(getString(R.string.title), posts[i].title)
-                    intent.putExtra(getString(R.string.author), posts[i].author)
-                    intent.putExtra(getString(R.string.date_updated), posts[i].date_updated)
+                        putExtra(getString(R.string.post_url), posts[i].postURL)
+                        putExtra(getString(R.string.thumbnail_Url), posts[i].thumbnailURL)
+                        putExtra(getString(R.string.title), posts[i].title)
+                        putExtra(getString(R.string.author), posts[i].author)
+                        putExtra(getString(R.string.date_updated), posts[i].date_updated)
 
-                    startActivity(intent)
-//
+                        startActivity(this)
+                    }
+
                 }
 
 

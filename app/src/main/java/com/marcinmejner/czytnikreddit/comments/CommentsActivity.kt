@@ -1,5 +1,6 @@
 package com.marcinmejner.czytnikreddit.comments
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -12,6 +13,7 @@ import android.widget.Toast
 import com.marcinmejner.czytnikreddit.R
 import com.marcinmejner.czytnikreddit.R.id.*
 import com.marcinmejner.czytnikreddit.RedApp
+import com.marcinmejner.czytnikreddit.WebView.WebViewActivity
 import com.marcinmejner.czytnikreddit.adapters.CommentsListAdapter
 import com.marcinmejner.czytnikreddit.api.FeedAPI
 import com.marcinmejner.czytnikreddit.model.Feed
@@ -63,6 +65,7 @@ class CommentsActivity : AppCompatActivity() {
         progressbar = findViewById(R.id.commentsProgressBar)
         progressbar?.visibility = View.VISIBLE
         commentsProgressBar.visibility = View.VISIBLE
+        progressText.visibility = View.VISIBLE
 
         RedApp.component.inject(this)
 
@@ -106,13 +109,14 @@ class CommentsActivity : AppCompatActivity() {
                                 entrys[i].id!!))
 
                         Log.d(TAG, "onResponse: NullPointerException : ${e.message}")
+
                     }
                 }
                 val adapter = CommentsListAdapter(this@CommentsActivity, R.layout.comments_layout, comments)
                 commentsListView.adapter = adapter
 
                 progressbar?.visibility = View.INVISIBLE
-                commentsProgressBar.visibility = View.INVISIBLE
+                progressText.visibility = View.INVISIBLE
             }
 
             override fun onFailure(call: Call<Feed>, t: Throwable) {
@@ -143,6 +147,14 @@ class CommentsActivity : AppCompatActivity() {
             Log.d(TAG, "initPost: splitted String: $currentFeed")
         } catch (e: ArrayIndexOutOfBoundsException) {
             Log.d(TAG, "initPost: ArrayIndexOutOfBoundsException ${e.message}")
+        }
+
+        postThumbnail.setOnClickListener {
+            Log.d(TAG, "initPost: opening url in webview : $postURL")
+            Intent(this@CommentsActivity, WebViewActivity::class.java).apply {
+                putExtra("url", postURL)
+                startActivity(this)
+            }
         }
 
     }
