@@ -3,11 +3,16 @@ package com.marcinmejner.czytnikreddit
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.content.ContextCompat.startActivity
 import android.util.Log
+import android.view.Menu
 import android.widget.Toast
+import android.widget.Toolbar
+import com.marcinmejner.czytnikreddit.R.id.listView
 import com.marcinmejner.czytnikreddit.adapters.CustomListAdapter
 import com.marcinmejner.czytnikreddit.api.FeedAPI
 import com.marcinmejner.czytnikreddit.comments.CommentsActivity
+import com.marcinmejner.czytnikreddit.account.LoginActivity
 import com.marcinmejner.czytnikreddit.model.Feed
 import com.marcinmejner.czytnikreddit.model.Post
 import com.marcinmejner.czytnikreddit.model.entry.Entry
@@ -40,6 +45,7 @@ class MainActivity : AppCompatActivity() {
 
 
         retrofitSetup()
+        setupToolbar()
 
         btnRefreshFeed.setOnClickListener {
             var feedName = etFeedName.text.toString()
@@ -50,6 +56,28 @@ class MainActivity : AppCompatActivity() {
                 retrofitSetup()
                 val customListAdapter = CustomListAdapter(this@MainActivity, R.layout.card_layout_main, posts)
                 listView.adapter = customListAdapter
+            }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.navigation_menu, menu)
+        return true
+    }
+
+    fun setupToolbar(){
+
+        toolbar_main.apply {
+            setSupportActionBar(this)
+
+            setOnMenuItemClickListener {item ->
+                when (item.itemId) {
+                    R.id.navLogin -> Intent(this@MainActivity, LoginActivity::class.java).apply {
+                        startActivity(this)
+                    }
+                    else -> Log.d(TAG, "setupToolbar: error")
+                }
+                true
             }
         }
     }

@@ -6,12 +6,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
+    
+    <RelativeLayout
+        android:id="@+id/relLayoutToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+
+        </android.support.v7.widget.Toolbar>
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/linLayout"
         android:orientation="horizontal"
+        android:layout_below="@+id/relLayoutToolbar"
         android:weightSum="100">
 
         <EditText

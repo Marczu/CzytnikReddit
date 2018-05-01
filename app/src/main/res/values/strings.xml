@@ -7,7 +7,7 @@
     <string name="title">title</string>
     <string name="author">author</string>
     <string name="date_updated">date_updated</string>
-
+    <string name="url">url</string>
 
 
 </resources>

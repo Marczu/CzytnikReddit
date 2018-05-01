@@ -1,10 +1,12 @@
 package com.marcinmejner.czytnikreddit.comments
 
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.Menu
 import android.view.View
 import android.widget.ImageView
 import android.widget.ListView
@@ -14,6 +16,7 @@ import com.marcinmejner.czytnikreddit.R
 import com.marcinmejner.czytnikreddit.R.id.*
 import com.marcinmejner.czytnikreddit.RedApp
 import com.marcinmejner.czytnikreddit.WebView.WebViewActivity
+import com.marcinmejner.czytnikreddit.account.LoginActivity
 import com.marcinmejner.czytnikreddit.adapters.CommentsListAdapter
 import com.marcinmejner.czytnikreddit.api.FeedAPI
 import com.marcinmejner.czytnikreddit.model.Feed
@@ -28,6 +31,7 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener
 import kotlinx.android.synthetic.main.activity_comments.*
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.comments_layout.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -61,6 +65,7 @@ class CommentsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comments)
         Log.d(TAG, "onCreate: ")
+        setupToolbar()
 
         progressbar = findViewById(R.id.commentsProgressBar)
         progressbar?.visibility = View.VISIBLE
@@ -73,7 +78,36 @@ class CommentsActivity : AppCompatActivity() {
         retrofitInit()
 
 
+
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.navigation_menu, menu)
+        return true
+    }
+
+
+    fun setupToolbar(){
+
+        comments_toolbar_main.apply {
+            setSupportActionBar(this)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setDisplayShowHomeEnabled(true)
+            setNavigationOnClickListener {
+                finish()
+            }
+            setOnMenuItemClickListener {item ->
+                when (item.itemId) {
+                    R.id.navLogin -> Intent(this@CommentsActivity, LoginActivity::class.java).apply {
+                        startActivity(this)
+                    }
+                    else -> Log.d(TAG, "setupToolbar: error")
+                }
+                true
+            }
+        }
+    }
+
 
     fun retrofitInit() {
         val call = feedAPI.getFeed(currentFeed)
@@ -115,6 +149,11 @@ class CommentsActivity : AppCompatActivity() {
                 val adapter = CommentsListAdapter(this@CommentsActivity, R.layout.comments_layout, comments)
                 commentsListView.adapter = adapter
 
+                //Klikniecie na komentarz powoduje włączenie alert dialogu
+                commentsListView.setOnItemClickListener { adapterView, view, i, l ->
+                    getUserComment()
+                }
+
                 progressbar?.visibility = View.INVISIBLE
                 progressText.visibility = View.INVISIBLE
             }
@@ -149,12 +188,30 @@ class CommentsActivity : AppCompatActivity() {
             Log.d(TAG, "initPost: ArrayIndexOutOfBoundsException ${e.message}")
         }
 
+        btnPostReply.setOnClickListener {
+            Log.d(TAG, "initPost: clicked reply")
+            getUserComment()
+        }
+
         postThumbnail.setOnClickListener {
             Log.d(TAG, "initPost: opening url in webview : $postURL")
             Intent(this@CommentsActivity, WebViewActivity::class.java).apply {
-                putExtra("url", postURL)
+                putExtra(getString(R.string.url), postURL)
                 startActivity(this)
             }
+        }
+
+    }
+
+    /*Wyświetlamy dialog ktory pozwala dodać komentarz*/
+    fun getUserComment(){
+        Dialog(this@CommentsActivity).apply {
+            title = "Dialog"
+            setContentView(R.layout.comment_input_dialog)
+            val width = (resources.displayMetrics.widthPixels * 0.95).toInt()
+            val height = (resources.displayMetrics.heightPixels * 0.7).toInt()
+            window.setLayout(width, height)
+            show()
         }
 
     }
