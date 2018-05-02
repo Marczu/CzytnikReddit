@@ -63,7 +63,7 @@ class CustomListAdapter(context: Context, val resource: Int, posts: ArrayList<Po
                 val inflater = LayoutInflater.from(context)
                 convertView = inflater.inflate(resource, parent, false)
                 holder = ViewHolder()
-                holder.title = convertView!!.findViewById<View>(R.id.cardTitle) as TextView
+                holder.title = convertView!!.findViewById<View>(R.id.cardTitle) as? TextView
                 holder.thumbnailURL = convertView.findViewById<View>(R.id.cardImage) as ImageView
                 holder.author = convertView.findViewById<View>(R.id.cardAuthor) as TextView
                 holder.date_updated = convertView.findViewById<View>(R.id.cardUpdated) as TextView
