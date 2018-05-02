@@ -16,6 +16,7 @@ class RedApp: Application() {
     override fun onCreate() {
         super.onCreate()
         component = DaggerNetworkComponent.builder()
+                .networkModule(NetworkModule(BASE_URL, SimpleXmlConverterFactory.create()))
                 .build()
     }
 

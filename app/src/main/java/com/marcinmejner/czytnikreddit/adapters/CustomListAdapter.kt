@@ -79,9 +79,9 @@ class CustomListAdapter(context: Context, val resource: Int, posts: ArrayList<Po
 
             lastPosition = position
 
-            holder.title!!.text = title
-            holder.author!!.text = author
-            holder.date_updated!!.text = date_updated
+            holder.title?.text = title
+            holder.author?.text = author
+            holder.date_updated?.text = date_updated
 
 
             val imageLoader = ImageLoader.getInstance()
@@ -98,15 +98,15 @@ class CustomListAdapter(context: Context, val resource: Int, posts: ArrayList<Po
 
             imageLoader.displayImage(imgUrl, holder.thumbnailURL, options, object : ImageLoadingListener {
                 override fun onLoadingStarted(imageUri: String, view: View) {
-                    holder.mProgressBar!!.visibility = View.VISIBLE
+                    holder.mProgressBar?.visibility = View.VISIBLE
                 }
 
                 override fun onLoadingFailed(imageUri: String, view: View, failReason: FailReason) {
-                    holder.mProgressBar!!.visibility = View.GONE
+                    holder.mProgressBar?.visibility = View.GONE
                 }
 
                 override fun onLoadingComplete(imageUri: String, view: View, loadedImage: Bitmap) {
-                    holder.mProgressBar!!.visibility = View.GONE
+                    holder.mProgressBar?.visibility = View.GONE
                 }
 
                 override fun onLoadingCancelled(imageUri: String, view: View) {

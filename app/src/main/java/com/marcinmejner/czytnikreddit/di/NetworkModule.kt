@@ -1,6 +1,5 @@
 package com.marcinmejner.czytnikreddit.di
 
-import com.marcinmejner.czytnikreddit.R.string.url
 import com.marcinmejner.czytnikreddit.utils.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -14,34 +13,14 @@ import javax.inject.Singleton
  * @author juancho.
  */
 @Module
-class NetworkModule() {
-
-
-//    @Provides
-//    @Singleton
-//    fun provideRetrofit(): Retrofit {
-//        return Retrofit.Builder()
-//                .baseUrl(url)
-//                .addConverterFactory(factory)
-//                .build()
-//    }
-
-
-//    @Provides
-//    @Singleton
-//    fun provideRetrofit(): Retrofit {
-//        return Retrofit.Builder()
-//                .baseUrl(url)
-//                .addConverterFactory(factory)
-//                .build()
-//    }
+class NetworkModule(var url: String, val factory: Converter.Factory ) {
 
     @Provides
     @Singleton
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(SimpleXmlConverterFactory.create())
+                .baseUrl(url)
+                .addConverterFactory(factory)
                 .build()
     }
 }

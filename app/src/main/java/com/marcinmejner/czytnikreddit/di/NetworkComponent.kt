@@ -18,6 +18,6 @@ interface NetworkComponent {
 
     fun inject(commentsActivity: CommentsActivity)
 
-//    fun inject(loginActivity: LoginActivity)
+    fun inject(loginActivity: LoginActivity)
 
 }

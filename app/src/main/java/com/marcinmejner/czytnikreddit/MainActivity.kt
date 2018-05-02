@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity() {
                     val lastPosition = postContent.size - 1
                     posts.add(Post(
                             entrys[i].title!!,
-                            entrys[i].author!!.name!!.replace("/u/", ""),
+                            entrys[i].author?.name!!.replace("/u/", ""),
                             entrys[i].updated!!,
                             postContent[0],
                             postContent[lastPosition]

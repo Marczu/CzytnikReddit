@@ -3,14 +3,22 @@ package com.marcinmejner.czytnikreddit.account
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class Data(
-        @set: SerializedName("modhash")
-        @get: SerializedName("modhash")
-        @Expose
-        var modhash: String? = "",
+class Data{
 
-        @set: SerializedName("cookie")
-        @get: SerializedName("cookie")
+        @SerializedName("modhash")
         @Expose
-        var cookie: String? = ""
-)
+        private var modhash: String? = null
+
+        @SerializedName("cookie")
+        @Expose
+        private var cookie: String? = null
+
+
+        override fun toString(): String {
+                return "Data{" +
+                        "modhash='" + modhash + '\''.toString() +
+                        ", cookie='" + cookie + '\''.toString() +
+                        '}'.toString()
+        }
+
+}

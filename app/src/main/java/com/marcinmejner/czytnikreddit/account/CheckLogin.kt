@@ -3,9 +3,17 @@ package com.marcinmejner.czytnikreddit.account
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class CheckLogin(
-        @set: SerializedName("json")
-        @get: SerializedName("json")
-        @Expose
-        var json: Json? = null
-)
+class CheckLogin {
+
+
+    @SerializedName("json")
+    @Expose
+    var json: Json? = null
+
+    override fun toString(): String {
+        return "CheckLogin{" +
+                "json=" + json +
+                '}'.toString()
+    }
+
+}

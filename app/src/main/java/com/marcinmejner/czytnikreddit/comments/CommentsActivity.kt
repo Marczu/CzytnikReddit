@@ -121,7 +121,7 @@ class CommentsActivity : AppCompatActivity() {
                     try{
                         comments.add(Comment(
                                 commentDetails[0],
-                                entrys[i].author?.name!!,
+                                entrys[i].author?.name?: "Not found",
                                 entrys[i].updated!!,
                                 entrys[i].id!!))
                     }catch (e: IndexOutOfBoundsException){
@@ -132,16 +132,17 @@ class CommentsActivity : AppCompatActivity() {
                                 "None"))
 
                         Log.d(TAG, "onResponse: ArrayIndexOutOfBoundsException ${e.message} ")
-                    }catch (e: NullPointerException){
-                        comments.add(Comment(
-                                commentDetails[0],
-                                "None",
-                                entrys[i].updated!!,
-                                entrys[i].id!!))
-
-                        Log.d(TAG, "onResponse: NullPointerException : ${e.message}")
-
                     }
+// catch (e: NullPointerException){
+//                        comments.add(Comment(
+//                                commentDetails[0],
+//                                "None",
+//                                entrys[i].updated!!,
+//                                entrys[i].id!!))
+//
+//                        Log.d(TAG, "onResponse: NullPointerException : ${e.message}")
+//
+//                    }
                 }
                 val adapter = CommentsListAdapter(this@CommentsActivity, R.layout.comments_layout, comments)
                 commentsListView.adapter = adapter
