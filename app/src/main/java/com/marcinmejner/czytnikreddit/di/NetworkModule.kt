@@ -26,6 +26,16 @@ class NetworkModule() {
 //                .build()
 //    }
 
+
+//    @Provides
+//    @Singleton
+//    fun provideRetrofit(): Retrofit {
+//        return Retrofit.Builder()
+//                .baseUrl(url)
+//                .addConverterFactory(factory)
+//                .build()
+//    }
+
     @Provides
     @Singleton
     fun provideRetrofit(): Retrofit {

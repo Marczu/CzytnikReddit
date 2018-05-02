@@ -9,7 +9,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.ImageView
-import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.Toast
 import com.marcinmejner.czytnikreddit.R
@@ -31,8 +30,6 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener
 import kotlinx.android.synthetic.main.activity_comments.*
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.comments_layout.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -89,7 +86,7 @@ class CommentsActivity : AppCompatActivity() {
 
     fun setupToolbar(){
 
-        comments_toolbar_main.apply {
+        toolbar_main.apply {
             setSupportActionBar(this)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setDisplayShowHomeEnabled(true)
