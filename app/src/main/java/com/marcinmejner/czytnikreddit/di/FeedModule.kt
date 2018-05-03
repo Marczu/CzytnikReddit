@@ -3,6 +3,7 @@ package com.marcinmejner.czytnikreddit.di
 import com.marcinmejner.czytnikreddit.api.FeedAPI
 import dagger.Module
 import dagger.Provides
+import org.jetbrains.annotations.NotNull
 import retrofit2.Retrofit
 import javax.inject.Singleton
 

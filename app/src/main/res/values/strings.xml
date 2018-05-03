@@ -9,6 +9,11 @@
     <string name="date_updated">date_updated</string>
     <string name="url">url</string>
 
+    //sharedPrefs
+    <string name="sesion_modhash">sesionModhash</string>
+    <string name="sesion_username">sesionUsername</string>
+    <string name="session_cookie">sessionCookie</string>
+
 
 </resources>
 

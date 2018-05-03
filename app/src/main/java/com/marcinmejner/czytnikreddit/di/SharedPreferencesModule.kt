@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import dagger.Module
 import dagger.Provides
+import org.jetbrains.annotations.NonNls
+import org.jetbrains.annotations.NotNull
 import javax.inject.Singleton
 
 @Module
@@ -19,6 +21,7 @@ class SharedPreferencesModule(val context: Context) {
 
     @Provides
     @Singleton
+    @NotNull
     fun provideSharedPreferencesEditor(preferences: SharedPreferences): SharedPreferences.Editor {
         return preferences.edit()
     }

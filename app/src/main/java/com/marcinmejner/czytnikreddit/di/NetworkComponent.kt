@@ -10,7 +10,8 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = arrayOf(
         FeedModule::class,
-        NetworkModule::class)
+        NetworkModule::class,
+        SharedPreferencesModule::class)
 )
 interface NetworkComponent {
 

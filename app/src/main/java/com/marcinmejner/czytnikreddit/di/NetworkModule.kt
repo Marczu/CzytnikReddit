@@ -1,5 +1,8 @@
 package com.marcinmejner.czytnikreddit.di
 
+import android.content.Context
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import com.marcinmejner.czytnikreddit.utils.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -13,7 +16,7 @@ import javax.inject.Singleton
  * @author juancho.
  */
 @Module
-class NetworkModule(var url: String, val factory: Converter.Factory ) {
+class NetworkModule(var url: String, val factory: Converter.Factory) {
 
     @Provides
     @Singleton
@@ -23,4 +26,6 @@ class NetworkModule(var url: String, val factory: Converter.Factory ) {
                 .addConverterFactory(factory)
                 .build()
     }
+
+
 }

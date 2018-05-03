@@ -1,6 +1,7 @@
 package com.marcinmejner.czytnikreddit.account
 
 
+import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -9,10 +10,12 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
 import com.marcinmejner.czytnikreddit.R
+import com.marcinmejner.czytnikreddit.RedApp
 import com.marcinmejner.czytnikreddit.api.FeedAPI
 
 import com.marcinmejner.czytnikreddit.di.DaggerNetworkComponent
 import com.marcinmejner.czytnikreddit.di.NetworkModule
+import com.marcinmejner.czytnikreddit.di.SharedPreferencesModule
 import com.marcinmejner.czytnikreddit.model.Feed
 import com.marcinmejner.czytnikreddit.model.Post
 import com.marcinmejner.czytnikreddit.model.entry.Entry
@@ -27,6 +30,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
+import kotlin.math.log
 
 
 class LoginActivity : AppCompatActivity() {
@@ -34,6 +38,12 @@ class LoginActivity : AppCompatActivity() {
 
     @Inject
     lateinit var feedAPI: FeedAPI
+
+    @Inject
+    lateinit var editor: SharedPreferences.Editor
+
+    @Inject
+    lateinit var prefs: SharedPreferences
 
     //widgets
     lateinit var progressBar: ProgressBar
@@ -69,6 +79,7 @@ class LoginActivity : AppCompatActivity() {
 
         val loginComponent = DaggerNetworkComponent.builder()
                 .networkModule(NetworkModule(LOGIN_URL, GsonConverterFactory.create()))
+                .sharedPreferencesModule(SharedPreferencesModule(this))
                 .build()
         loginComponent.inject(this)
 
@@ -85,18 +96,41 @@ class LoginActivity : AppCompatActivity() {
                 val modhash = response?.body()?.json?.data?.modhash
                 val cookie = response?.body()?.json?.data?.cookie
                 Log.d(TAG, "onResponse: modhash = $modhash \n cookie = $cookie")
+
+                if (!modhash?.equals("")!!) {
+                    setSessionParams(username, modhash, cookie!!)
+                    progressBar.visibility = View.GONE
+                    loginInputName.setText("")
+                    loginInputPassword.setText("")
+                    Toast.makeText(this@LoginActivity, "Login Succesful", Toast.LENGTH_LONG).show()
+                    finish()
+                }
             }
 
             override fun onFailure(call: Call<CheckLogin>?, t: Throwable?) {
                 Log.e(TAG, "onFailure: Unable to retrieve RSS: " + t?.message)
                 Toast.makeText(this@LoginActivity, "An Error Occured", Toast.LENGTH_SHORT).show()
+                progressBar.visibility = View.GONE
             }
         })
     }
 
     fun setSessionParams(username: String, modhash: String, cookie: String) {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val editor = preferences.edit()
+
+//        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+//        val editor = preferences.edit()
+        Log.d(TAG, "setSessionParams: saveing sesion vars: \n" +
+                "username = $username \n" +
+                "modhash = $modhash \n" +
+                "cookie = $cookie")
+
+        editor.putString(getString(R.string.sesion_modhash), modhash).apply { commit() }
+        editor.putString(getString(R.string.sesion_username), username).apply { commit() }
+        editor.putString(getString(R.string.session_cookie), cookie).apply { commit() }
+
+        val mod = prefs.getString(getString(R.string.sesion_modhash), "")
+
+        Log.d(TAG, "setSessionParams: zapisany mod: $mod")
 
 
     }
