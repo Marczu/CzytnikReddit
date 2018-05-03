@@ -3,11 +3,11 @@ package com.marcinmejner.czytnikreddit.account
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class Json{
+data class Json( @SerializedName("data")
+                 @Expose
+                 var data: Data? = null){
 
-        @SerializedName("data")
-        @Expose
-        private var data: Data? = null
+
 
 
 

@@ -3,6 +3,7 @@ package com.marcinmejner.czytnikreddit.account
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
@@ -61,10 +62,6 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please fill username and password", Toast.LENGTH_LONG).show()
             }
         }
-
-
-
-
     }
 
 
@@ -75,15 +72,19 @@ class LoginActivity : AppCompatActivity() {
                 .build()
         loginComponent.inject(this)
 
-        val headerMap = HashMap<String, String>().apply {
-            put("Content-Type", "application/json")
-        }
+        val headerMap = HashMap<String, String>()
+        headerMap.put("Content-Type", "application/json")
+
 
         val call = feedAPI.signIn(headerMap, username!!, username!!, password!!, "json")
         call.enqueue(object : Callback<CheckLogin> {
-            override fun onResponse(call: Call<CheckLogin>?, response: Response<CheckLogin>?) {
+            override fun onResponse(call: Call<CheckLogin>, response: Response<CheckLogin>?) {
                 Log.d(TAG, "onResponse: feed ${response?.body()?.toString()}")
                 Log.d(TAG, "onResponse: Server Response ${response.toString()}")
+
+                val modhash = response?.body()?.json?.data?.modhash
+                val cookie = response?.body()?.json?.data?.cookie
+                Log.d(TAG, "onResponse: modhash = $modhash \n cookie = $cookie")
             }
 
             override fun onFailure(call: Call<CheckLogin>?, t: Throwable?) {
@@ -91,5 +92,12 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this@LoginActivity, "An Error Occured", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    fun setSessionParams(username: String, modhash: String, cookie: String) {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val editor = preferences.edit()
+
+
     }
 }

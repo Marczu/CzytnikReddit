@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var posts: ArrayList<Post>
     var currentFeed: String? = ""
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -44,6 +43,8 @@ class MainActivity : AppCompatActivity() {
 
         retrofitSetup()
         setupToolbar()
+
+
 
         btnRefreshFeed.setOnClickListener {
             var feedName = etFeedName.text.toString()
@@ -86,6 +87,7 @@ class MainActivity : AppCompatActivity() {
 
         call.enqueue(object : Callback<Feed> {
             override fun onResponse(call: Call<Feed>, response: Response<Feed>) {
+
 
                 val entrys: List<Entry>? = response.body()?.entrys
                 Log.d(TAG, "onResponse: entrysss: " + response.body()?.entrys)
@@ -141,16 +143,12 @@ class MainActivity : AppCompatActivity() {
 
                         startActivity(this)
                     }
-
                 }
-
-
             }
 
             override fun onFailure(call: Call<Feed>, t: Throwable) {
                 Log.e(TAG, "onFailure: Unable to retrieve RSS: " + t.message)
                 Toast.makeText(this@MainActivity, "An Error Occured", Toast.LENGTH_SHORT).show()
-
             }
         })
     }
