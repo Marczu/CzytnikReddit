@@ -36,12 +36,11 @@ import kotlin.math.log
 class LoginActivity : AppCompatActivity() {
     private val TAG = "LoginActivity"
 
+    //Dagger
     @Inject
     lateinit var feedAPI: FeedAPI
-
     @Inject
     lateinit var editor: SharedPreferences.Editor
-
     @Inject
     lateinit var prefs: SharedPreferences
 

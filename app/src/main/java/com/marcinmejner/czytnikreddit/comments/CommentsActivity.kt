@@ -2,15 +2,14 @@ package com.marcinmejner.czytnikreddit.comments
 
 import android.app.Dialog
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.Toast
+import android.widget.*
 import com.marcinmejner.czytnikreddit.R
 import com.marcinmejner.czytnikreddit.R.id.*
 import com.marcinmejner.czytnikreddit.RedApp
@@ -45,6 +44,7 @@ class CommentsActivity : AppCompatActivity() {
         var stringPostAuthor: String = ""
         var stringPostUpdated: String = ""
         var defaultImage: Int = 0
+        var postID: String = ""
     }
 
     var progressbar: ProgressBar? = null
@@ -54,28 +54,38 @@ class CommentsActivity : AppCompatActivity() {
     //vars
     var currentFeed: String = ""
     var comments: ArrayList<Comment> = ArrayList()
+    var modhash: String? = ""
+    var cookie: String? = ""
+    var username: String? = ""
 
+    //Dagger
     @Inject
     lateinit var feedAPI: FeedAPI
+    @Inject
+    lateinit var prefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comments)
         Log.d(TAG, "onCreate: ")
+        RedApp.component.inject(this)
+
         setupToolbar()
+        getSessionParams()
 
         progressbar = findViewById(R.id.commentsProgressBar)
         progressbar?.visibility = View.VISIBLE
         commentsProgressBar.visibility = View.VISIBLE
         progressText.visibility = View.VISIBLE
 
-        RedApp.component.inject(this)
 
         initPost()
         retrofitInit()
+    }
 
-
-
+    override fun onPostResume() {
+        super.onPostResume()
+        getSessionParams()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -149,7 +159,7 @@ class CommentsActivity : AppCompatActivity() {
 
                 //Klikniecie na komentarz powoduje włączenie alert dialogu
                 commentsListView.setOnItemClickListener { adapterView, view, i, l ->
-                    getUserComment()
+                    getUserComment(postID)
                 }
 
                 progressbar?.visibility = View.INVISIBLE
@@ -169,6 +179,7 @@ class CommentsActivity : AppCompatActivity() {
         stringPostTitle = intent.getStringExtra(getString(R.string.title))
         stringPostAuthor = intent.getStringExtra(getString(R.string.author))
         stringPostUpdated = intent.getStringExtra(getString(R.string.date_updated))
+        postID = intent.getStringExtra(getString(R.string.id))
 
         postTitle.text = intent.getStringExtra(getString(R.string.title))
         postAuthor.text = intent.getStringExtra(getString(R.string.author))
@@ -188,7 +199,7 @@ class CommentsActivity : AppCompatActivity() {
 
         btnPostReply.setOnClickListener {
             Log.d(TAG, "initPost: clicked reply")
-            getUserComment()
+            getUserComment(postID)
         }
 
         postThumbnail.setOnClickListener {
@@ -202,14 +213,23 @@ class CommentsActivity : AppCompatActivity() {
     }
 
     /*Wyświetlamy dialog ktory pozwala dodać komentarz*/
-    fun getUserComment(){
-        Dialog(this@CommentsActivity).apply {
+    fun getUserComment(post_id: String){
+        val dialog = Dialog(this@CommentsActivity).apply {
             title = "Dialog"
             setContentView(R.layout.comment_input_dialog)
             val width = (resources.displayMetrics.widthPixels * 0.95).toInt()
             val height = (resources.displayMetrics.heightPixels * 0.7).toInt()
             window.setLayout(width, height)
             show()
+        }
+
+        val btnPostComment = dialog.findViewById<Button>(R.id.dialogPostCommentBtn)
+        val comment = dialog.findViewById<EditText>(R.id.dialogComment)
+
+        btnPostComment.setOnClickListener {
+            Log.d(TAG, "getUserComment: attempting to post comment")
+
+            //Post comment retrofit stuff
         }
 
     }
@@ -260,6 +280,18 @@ class CommentsActivity : AppCompatActivity() {
         ImageLoader.getInstance().init(config)
 
         defaultImage = this@CommentsActivity.resources.getIdentifier("@drawable/reddit_default", null, this@CommentsActivity.packageName)
+    }
+
+    /*Odbieramy dane zapisane w pamięci, z sesji logowania*/
+    fun getSessionParams(){
+        username = prefs.getString(getString(R.string.sesion_username), "")
+        modhash = prefs.getString(getString(R.string.sesion_modhash), "")
+        cookie = prefs.getString(getString(R.string.session_cookie), "")
+
+        Log.d(TAG, "getSessionParams: retreaving sesion vars: \n" +
+                "username = $username \n" +
+                "modhash = $modhash \n" +
+                "cookie = $cookie")
     }
 
 }

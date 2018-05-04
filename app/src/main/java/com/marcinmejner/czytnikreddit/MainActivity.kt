@@ -114,19 +114,23 @@ class MainActivity : AppCompatActivity() {
                             entrys[i].author?.name!!.replace("/u/", ""),
                             entrys[i].updated!!,
                             postContent[0],
-                            postContent[lastPosition]
+                            postContent[lastPosition],
+                            entrys[i].id!!
                     ))
                     Log.d(TAG, "onResponse: tralalala : $postContent")
 
                 }
+
                 for (j in 0 until posts.size) {
                     Log.d(TAG, "onResponse dane z XMLa: \n" +
                             "PostURL : ${posts[j].postURL} \n" +
                             "ThumbnailUrl : ${posts[j].thumbnailURL} \n" +
                             "Title : ${posts[j].title} \n" +
                             "Author : ${posts[j].author} \n" +
-                            "Date Updated : ${posts[j].date_updated}")
+                            "Date Updated : ${posts[j].date_updated} \n" +
+                            "Post ID : ${posts[j].id} " )
                 }
+
                 val customListAdapter = CustomListAdapter(this@MainActivity, R.layout.card_layout_main, posts)
                 listView.adapter = customListAdapter
 
@@ -140,6 +144,7 @@ class MainActivity : AppCompatActivity() {
                         putExtra(getString(R.string.title), posts[i].title)
                         putExtra(getString(R.string.author), posts[i].author)
                         putExtra(getString(R.string.date_updated), posts[i].date_updated)
+                        putExtra(getString(R.string.id), posts[i].id)
 
                         startActivity(this)
                     }
