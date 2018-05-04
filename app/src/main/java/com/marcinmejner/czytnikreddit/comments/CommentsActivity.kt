@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
@@ -12,14 +13,27 @@ import android.view.View
 import android.widget.*
 import com.marcinmejner.czytnikreddit.R
 import com.marcinmejner.czytnikreddit.R.id.*
+import com.marcinmejner.czytnikreddit.R.string.url
 import com.marcinmejner.czytnikreddit.RedApp
 import com.marcinmejner.czytnikreddit.WebView.WebViewActivity
 import com.marcinmejner.czytnikreddit.account.LoginActivity
 import com.marcinmejner.czytnikreddit.adapters.CommentsListAdapter
 import com.marcinmejner.czytnikreddit.api.FeedAPI
+import com.marcinmejner.czytnikreddit.comments.CommentsActivity.Companion.defaultImage
+import com.marcinmejner.czytnikreddit.comments.CommentsActivity.Companion.postID
+import com.marcinmejner.czytnikreddit.comments.CommentsActivity.Companion.postThumbnailUrl
+import com.marcinmejner.czytnikreddit.comments.CommentsActivity.Companion.postURL
+import com.marcinmejner.czytnikreddit.comments.CommentsActivity.Companion.stringPostAuthor
+import com.marcinmejner.czytnikreddit.comments.CommentsActivity.Companion.stringPostTitle
+import com.marcinmejner.czytnikreddit.comments.CommentsActivity.Companion.stringPostUpdated
+import com.marcinmejner.czytnikreddit.di.DaggerNetworkComponent
+import com.marcinmejner.czytnikreddit.di.NetworkModule
+import com.marcinmejner.czytnikreddit.di.SharedPreferencesModule
 import com.marcinmejner.czytnikreddit.model.Feed
 import com.marcinmejner.czytnikreddit.utils.BASE_URL
+import com.marcinmejner.czytnikreddit.utils.COMMENT_URL
 import com.marcinmejner.czytnikreddit.utils.ExtractXML
+import com.marcinmejner.czytnikreddit.utils.LOGIN_URL
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache
 import com.nostra13.universalimageloader.core.DisplayImageOptions
 import com.nostra13.universalimageloader.core.ImageLoader
@@ -32,6 +46,9 @@ import kotlinx.android.synthetic.main.activity_comments.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.HashMap
 import javax.inject.Inject
 
 class CommentsActivity : AppCompatActivity() {
@@ -128,14 +145,16 @@ class CommentsActivity : AppCompatActivity() {
                     Log.d(TAG, "onResponse: ${extract.start()}")
                     val commentDetails = extract.start()
 
-                    try{
-                        comments.add(Comment(
+                    try {
+                        comments.add(com.marcinmejner.czytnikreddit.comments.Comment(
                                 commentDetails[0],
-                                entrys[i].author?.name?: "Not found",
+                                entrys[i].author?.name?: "None",
                                 entrys[i].updated!!,
-                                entrys[i].id!!))
+                                entrys[i].id!!
+                        ))
+
                     }catch (e: IndexOutOfBoundsException){
-                        comments.add(Comment(
+                        comments.add(com.marcinmejner.czytnikreddit.comments.Comment(
                                 "Error reading comment",
                                 "None",
                                 "None",
@@ -159,7 +178,7 @@ class CommentsActivity : AppCompatActivity() {
 
                 //Klikniecie na komentarz powoduje włączenie alert dialogu
                 commentsListView.setOnItemClickListener { adapterView, view, i, l ->
-                    getUserComment(postID)
+                    getUserComment(this@CommentsActivity.comments[i].id)
                 }
 
                 progressbar?.visibility = View.INVISIBLE
@@ -227,9 +246,57 @@ class CommentsActivity : AppCompatActivity() {
         val comment = dialog.findViewById<EditText>(R.id.dialogComment)
 
         btnPostComment.setOnClickListener {
-            Log.d(TAG, "getUserComment: attempting to post comment")
+            Log.d(TAG, "getUserComment: ; attempting to post comment")
 
             //Post comment retrofit stuff
+            val retrofit = Retrofit.Builder()
+                    .baseUrl(COMMENT_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+            val feedAPI2 = retrofit.create(FeedAPI::class.java)
+
+            var headerMap = HashMap<String, String>()
+            headerMap.put("User-Agent", username!!)
+            headerMap.put("X-Modhash", modhash!!)
+            headerMap.put("cookie", "reddit_session=" + cookie)
+
+            Log.d(TAG, "btnPostComment:  \n" +
+                    "username: " + username + "\n" +
+                    "modhash: " + modhash + "\n" +
+                    "cookie: " + cookie + "\n"
+            )
+
+            var com = comment.text.toString()
+
+            val call = feedAPI2.submitComment(headerMap, "comment", post_id, com)
+            call.enqueue(object : Callback<CheckComment>{
+
+                override fun onResponse(call: Call<CheckComment>?, response: Response<CheckComment>?) {
+                    Log.d(TAG, "onResponse: feed ${response?.body()?.toString()}")
+                    Log.d(TAG, "onResponse: Server Response ${response.toString()}")
+                    Log.d(TAG, "onResponse: succesful =  ${response?.body()?.success!!}")
+
+                    Log.d(TAG, "onResponse: post_id to: $post_id")
+
+                    val postSuccess = response?.body()?.success
+
+                    if(postSuccess.equals("true")){
+                        Toast.makeText(this@CommentsActivity, "Comment added", Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+                        Log.d(TAG, "onResponse: adding ")
+                    }else{
+                        Toast.makeText(this@CommentsActivity, "An Error Occured", Toast.LENGTH_SHORT).show()
+                        Log.d(TAG, "ERROR")
+
+                    }
+
+                }
+
+                override fun onFailure(call: Call<CheckComment>?, t: Throwable?) {
+                    Log.e(TAG, "onFailure: Unable to retrieve RSS: " + t?.message)
+                    Toast.makeText(this@CommentsActivity, "An Error Occured", Toast.LENGTH_SHORT).show()
+                }
+            })
         }
 
     }
