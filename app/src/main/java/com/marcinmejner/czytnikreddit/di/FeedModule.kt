@@ -10,6 +10,6 @@ import javax.inject.Singleton
 class FeedModule {
 
     @Provides
-    @Singleton
+    @NetworkScope
     fun provideRedditApi(retrofi: Retrofit): FeedAPI = retrofi.create(FeedAPI::class.java)
 }

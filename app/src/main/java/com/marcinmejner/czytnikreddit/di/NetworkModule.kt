@@ -16,7 +16,7 @@ import javax.inject.Singleton
 class NetworkModule(var url: String, val factory: Converter.Factory) {
 
     @Provides
-    @Singleton
+    @NetworkScope
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
                 .baseUrl(url)

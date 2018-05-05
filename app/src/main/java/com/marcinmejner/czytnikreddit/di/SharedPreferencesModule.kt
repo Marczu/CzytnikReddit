@@ -13,13 +13,13 @@ import javax.inject.Singleton
 class SharedPreferencesModule(val context: Context) {
 
     @Provides
-    @Singleton
+    @NetworkScope
     fun provideSharedPreferences(): SharedPreferences {
         return PreferenceManager.getDefaultSharedPreferences(context)
     }
 
     @Provides
-    @Singleton
+    @NetworkScope
     @NotNull
     fun provideSharedPreferencesEditor(preferences: SharedPreferences): SharedPreferences.Editor {
         return preferences.edit()

@@ -7,7 +7,7 @@ import dagger.Component
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
-@Singleton
+@NetworkScope
 @Component(modules = arrayOf(
         FeedModule::class,
         NetworkModule::class,
