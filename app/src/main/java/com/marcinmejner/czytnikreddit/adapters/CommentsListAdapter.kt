@@ -1,32 +1,20 @@
 package com.marcinmejner.czytnikreddit.adapters
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.marcinmejner.czytnikreddit.R
 import com.marcinmejner.czytnikreddit.comments.Comment
-import com.marcinmejner.czytnikreddit.model.Post
-import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache
-import com.nostra13.universalimageloader.core.DisplayImageOptions
-import com.nostra13.universalimageloader.core.ImageLoader
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
-import com.nostra13.universalimageloader.core.assist.FailReason
-import com.nostra13.universalimageloader.core.assist.ImageScaleType
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener
 
 class CommentsListAdapter(context: Context, val resource: Int, posts: ArrayList<Comment>) : ArrayAdapter<Comment>(context, resource, posts) {
     private val TAG = "CustomListAdapter"
 
     private var lastPosition = -1
-
 
     inner class ViewHolder {
 
@@ -36,8 +24,6 @@ class CommentsListAdapter(context: Context, val resource: Int, posts: ArrayList<
          var mProgressBar: ProgressBar? = null
     }
 
-
-
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
 
         var convertView = convertView
@@ -46,10 +32,7 @@ class CommentsListAdapter(context: Context, val resource: Int, posts: ArrayList<
         var author = getItem(position).author
         var date_updated = getItem(position).updated
 
-
         try {
-
-
             //create the view result for showing the animation
             val result: View
 
@@ -80,7 +63,6 @@ class CommentsListAdapter(context: Context, val resource: Int, posts: ArrayList<
             holder.author!!.text = author
             holder.date_updated!!.text = date_updated
             holder.mProgressBar?.visibility = View.INVISIBLE
-
 
             return convertView
         } catch (e: IllegalArgumentException) {

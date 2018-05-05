@@ -49,9 +49,7 @@ class CustomListAdapter(context: Context, val resource: Int, posts: ArrayList<Po
         var author = getItem(position).author
         var date_updated = getItem(position).date_updated
 
-
         try {
-
 
             //create the view result for showing the animation
             val result: View
@@ -120,12 +118,6 @@ class CustomListAdapter(context: Context, val resource: Int, posts: ArrayList<Po
             Log.e(TAG, "getView: IllegalArgumentException: " + e.message)
             return convertView
         }
-
-
-
-
-
-
     }
 
     private fun setupImageLoader() {

@@ -10,8 +10,6 @@ class ExtractXML(
 
     private val TAG = "ExtractXML"
 
-
-
     fun start(): ArrayList<String>{
         val result = ArrayList<String>()
         var splitXml : Array<String>
@@ -25,7 +23,6 @@ class ExtractXML(
             splitXml = xml.split(tag).toTypedArray()
         }
 
-//        var splitXml = xml!!.split((tag!! + "\"").toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         Log.d(TAG, "start: $splitXml")
         val count = splitXml.size
         Log.d(TAG, "start: splitXml.size to : $count ")

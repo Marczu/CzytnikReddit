@@ -11,10 +11,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import javax.inject.Singleton
 
-/**
- *
- * @author juancho.
- */
+
 @Module
 class NetworkModule(var url: String, val factory: Converter.Factory) {
 

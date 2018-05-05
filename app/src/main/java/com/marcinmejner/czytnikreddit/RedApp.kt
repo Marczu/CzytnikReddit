@@ -9,20 +9,14 @@ class RedApp: Application() {
 
     companion object {
         lateinit var component: NetworkComponent
-//        lateinit var sharedPrefs: SharedPreferencesComponent
     }
 
     override fun onCreate() {
         super.onCreate()
         component = DaggerNetworkComponent.builder()
-                .networkModule(NetworkModule(BASE_URL, SimpleXmlConverterFactory.create()))
-                .sharedPreferencesModule(SharedPreferencesModule(this))
+                .networkModule(com.marcinmejner.czytnikreddit.di.NetworkModule(BASE_URL, SimpleXmlConverterFactory.create()))
+                .sharedPreferencesModule(com.marcinmejner.czytnikreddit.di.SharedPreferencesModule(this))
                 .build()
-
-//        sharedPrefs = DaggerSharedPreferencesComponent.builder()
-//                .sp(SharedPreferencesModule(this))
-//                .build()
-
     }
 
 }

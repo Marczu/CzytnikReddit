@@ -4,33 +4,25 @@ package com.marcinmejner.czytnikreddit.account
 import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
 import com.marcinmejner.czytnikreddit.R
-import com.marcinmejner.czytnikreddit.RedApp
 import com.marcinmejner.czytnikreddit.api.FeedAPI
 
 import com.marcinmejner.czytnikreddit.di.DaggerNetworkComponent
 import com.marcinmejner.czytnikreddit.di.NetworkModule
 import com.marcinmejner.czytnikreddit.di.SharedPreferencesModule
-import com.marcinmejner.czytnikreddit.model.Feed
-import com.marcinmejner.czytnikreddit.model.Post
-import com.marcinmejner.czytnikreddit.model.entry.Entry
-import com.marcinmejner.czytnikreddit.utils.BASE_URL
-import com.marcinmejner.czytnikreddit.utils.ExtractXML
+
 import com.marcinmejner.czytnikreddit.utils.LOGIN_URL
 import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.activity_login.view.*
-import kotlinx.android.synthetic.main.activity_main.*
+
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
-import kotlin.math.log
 
 
 class LoginActivity : AppCompatActivity() {
@@ -53,7 +45,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-
         progressBar = loginRequestLoadingProgressBar.apply {
             visibility = View.GONE
         }
@@ -73,7 +64,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-
     fun login(username: String?, password: String?) {
 
         val loginComponent = DaggerNetworkComponent.builder()
@@ -82,12 +72,8 @@ class LoginActivity : AppCompatActivity() {
                 .build()
         loginComponent.inject(this)
 
-
-
-
         val headerMap = HashMap<String, String>()
         headerMap.put("Content-Type", "application/json")
-
 
         val call = feedAPI.signIn(headerMap, username!!, username!!, password!!, "json")
         call.enqueue(object : Callback<CheckLogin> {
@@ -123,9 +109,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun setSessionParams(username: String, modhash: String, cookie: String) {
-
-//        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-//        val editor = preferences.edit()
         Log.d(TAG, "setSessionParams: saveing sesion vars: \n" +
                 "username = $username \n" +
                 "modhash = $modhash \n" +
@@ -138,7 +121,5 @@ class LoginActivity : AppCompatActivity() {
         val mod = prefs.getString(getString(R.string.sesion_modhash), "")
 
         Log.d(TAG, "setSessionParams: zapisany mod: $mod")
-
-
     }
 }

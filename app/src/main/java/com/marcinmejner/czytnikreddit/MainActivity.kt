@@ -40,11 +40,7 @@ class MainActivity : AppCompatActivity() {
 
         RedApp.component.inject(this)
 
-
-        retrofitSetup()
         setupToolbar()
-
-
 
         btnRefreshFeed.setOnClickListener {
             var feedName = etFeedName.text.toString()
@@ -65,7 +61,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setupToolbar(){
-
         toolbar_main.apply {
             setSupportActionBar(this)
 
@@ -84,10 +79,8 @@ class MainActivity : AppCompatActivity() {
     fun retrofitSetup() {
 
         val call = feedAPI.getFeed(currentFeed!!)
-
         call.enqueue(object : Callback<Feed> {
             override fun onResponse(call: Call<Feed>, response: Response<Feed>) {
-
 
                 val entrys: List<Entry>? = response.body()?.entrys
                 Log.d(TAG, "onResponse: entrysss: " + response.body()?.entrys)
@@ -118,7 +111,6 @@ class MainActivity : AppCompatActivity() {
                             entrys[i].id!!
                     ))
                     Log.d(TAG, "onResponse: tralalala : $postContent")
-
                 }
 
                 for (j in 0 until posts.size) {
@@ -138,7 +130,6 @@ class MainActivity : AppCompatActivity() {
                 listView.setOnItemClickListener { adapterView, view, i, l ->
                     Log.d(TAG, "onResponse: clicked on ${posts[i].author}")
                     Intent(this@MainActivity, CommentsActivity::class.java).apply {
-
                         putExtra(getString(R.string.post_url), posts[i].postURL)
                         putExtra(getString(R.string.thumbnail_Url), posts[i].thumbnailURL)
                         putExtra(getString(R.string.title), posts[i].title)
@@ -157,7 +148,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-
 }
 
 

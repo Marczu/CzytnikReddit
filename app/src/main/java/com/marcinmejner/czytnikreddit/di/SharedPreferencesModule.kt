@@ -12,7 +12,6 @@ import javax.inject.Singleton
 @Module
 class SharedPreferencesModule(val context: Context) {
 
-
     @Provides
     @Singleton
     fun provideSharedPreferences(): SharedPreferences {

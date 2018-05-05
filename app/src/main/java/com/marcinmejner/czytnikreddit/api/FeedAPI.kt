@@ -7,8 +7,7 @@ import com.marcinmejner.czytnikreddit.comments.CheckComment
 import retrofit2.http.*
 import retrofit2.http.HeaderMap
 import retrofit2.http.POST
-
-
+import java.net.URLEncoder
 
 
 interface FeedAPI {
@@ -26,22 +25,17 @@ interface FeedAPI {
             @Query("api_type") type: String
     ): Call<CheckLogin>
 
-//    //Wysyłanie komentarza
-//    @POST("{comment}")
-//    fun submitComment(
-//            @HeaderMap headers: Map<String, String>,
-//            @Path("comment") comment: String,
-//            @Query("parent") parent: String,
-//            @Query("amp;text") text: String
-//    ): Call<CheckComment>
+    val url: String
+        get() = URLEncoder.encode("amp;text", "UTF-8")
 
     @POST("{comment}")
     fun submitComment(
             @HeaderMap headers: Map<String, String>,
             @Path("comment") comment: String,
             @Query("parent") parent: String,
-            @Query("amp;text") text: String
+            @Query("amp;text", encoded = true) text: String
     ): Call<CheckComment>
+
 
 
 }

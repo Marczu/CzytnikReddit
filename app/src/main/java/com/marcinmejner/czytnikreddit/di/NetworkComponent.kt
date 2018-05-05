@@ -7,7 +7,6 @@ import dagger.Component
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
-
 @Singleton
 @Component(modules = arrayOf(
         FeedModule::class,
@@ -22,7 +21,5 @@ interface NetworkComponent {
 
     fun inject(loginActivity: LoginActivity)
 
-
     fun getRetrofit(): Retrofit
-
 }

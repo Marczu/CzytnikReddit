@@ -23,7 +23,6 @@ import com.marcinmejner.czytnikreddit.model.Feed
 import com.marcinmejner.czytnikreddit.utils.BASE_URL
 import com.marcinmejner.czytnikreddit.utils.COMMENT_URL
 import com.marcinmejner.czytnikreddit.utils.ExtractXML
-import com.marcinmejner.czytnikreddit.utils.LOGIN_URL
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache
 import com.nostra13.universalimageloader.core.DisplayImageOptions
 import com.nostra13.universalimageloader.core.ImageLoader
@@ -36,7 +35,6 @@ import kotlinx.android.synthetic.main.activity_comments.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.HashMap
 import javax.inject.Inject
@@ -85,7 +83,6 @@ class CommentsActivity : AppCompatActivity() {
         commentsProgressBar.visibility = View.VISIBLE
         progressText.visibility = View.VISIBLE
 
-
         initPost()
         retrofitInit()
     }
@@ -122,7 +119,6 @@ class CommentsActivity : AppCompatActivity() {
         }
     }
 
-
     fun retrofitInit() {
         val call = feedAPI.getFeed(currentFeed)
 
@@ -152,16 +148,6 @@ class CommentsActivity : AppCompatActivity() {
 
                         Log.d(TAG, "onResponse: ArrayIndexOutOfBoundsException ${e.message} ")
                     }
-// catch (e: NullPointerException){
-//                        comments.add(Comment(
-//                                commentDetails[0],
-//                                "None",
-//                                entrys[i].updated!!,
-//                                entrys[i].id!!))
-//
-//                        Log.d(TAG, "onResponse: NullPointerException : ${e.message}")
-//
-//                    }
                 }
                 val adapter = CommentsListAdapter(this@CommentsActivity, R.layout.comments_layout, comments)
                 commentsListView.adapter = adapter
@@ -218,7 +204,6 @@ class CommentsActivity : AppCompatActivity() {
                 startActivity(this)
             }
         }
-
     }
 
     /*Wyświetlamy dialog ktory pozwala dodać komentarz*/
@@ -236,14 +221,13 @@ class CommentsActivity : AppCompatActivity() {
         val comment = dialog.findViewById<EditText>(R.id.dialogComment)
 
         btnPostComment.setOnClickListener {
-            Log.d(TAG, "getUserComment: ; attempting to post comment")
+            Log.d(TAG, "getUserComment:  attempting to post comment")
 
             //Post comment retrofit stuff
             val commentsRetrofit = DaggerNetworkComponent.builder()
                     .networkModule(NetworkModule(COMMENT_URL, GsonConverterFactory.create()))
                     .sharedPreferencesModule(SharedPreferencesModule(this))
                     .build()
-
 
             val retrofit = commentsRetrofit.getRetrofit()
             val feedAPI2 = retrofit.create(FeedAPI::class.java)
@@ -281,9 +265,7 @@ class CommentsActivity : AppCompatActivity() {
                     }else{
                         Toast.makeText(this@CommentsActivity, "An Error Occured", Toast.LENGTH_SHORT).show()
                         Log.d(TAG, "ERROR")
-
                     }
-
                 }
 
                 override fun onFailure(call: Call<CheckComment>?, t: Throwable?) {
@@ -292,7 +274,6 @@ class CommentsActivity : AppCompatActivity() {
                 }
             })
         }
-
     }
 
     fun displayImage(imageUrl: String, imageView: ImageView, progressBar: ProgressBar) {

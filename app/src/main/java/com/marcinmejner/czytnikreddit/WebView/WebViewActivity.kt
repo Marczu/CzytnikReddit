@@ -21,8 +21,6 @@ class WebViewActivity: AppCompatActivity() {
         webcviewProgressText.visibility = View.VISIBLE
 
         initWebview()
-
-
     }
 
     fun initWebview(){
