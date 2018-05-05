@@ -5,27 +5,17 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.*
 import com.marcinmejner.czytnikreddit.R
-import com.marcinmejner.czytnikreddit.R.id.*
-import com.marcinmejner.czytnikreddit.R.string.url
 import com.marcinmejner.czytnikreddit.RedApp
 import com.marcinmejner.czytnikreddit.WebView.WebViewActivity
 import com.marcinmejner.czytnikreddit.account.LoginActivity
 import com.marcinmejner.czytnikreddit.adapters.CommentsListAdapter
 import com.marcinmejner.czytnikreddit.api.FeedAPI
-import com.marcinmejner.czytnikreddit.comments.CommentsActivity.Companion.defaultImage
-import com.marcinmejner.czytnikreddit.comments.CommentsActivity.Companion.postID
-import com.marcinmejner.czytnikreddit.comments.CommentsActivity.Companion.postThumbnailUrl
-import com.marcinmejner.czytnikreddit.comments.CommentsActivity.Companion.postURL
-import com.marcinmejner.czytnikreddit.comments.CommentsActivity.Companion.stringPostAuthor
-import com.marcinmejner.czytnikreddit.comments.CommentsActivity.Companion.stringPostTitle
-import com.marcinmejner.czytnikreddit.comments.CommentsActivity.Companion.stringPostUpdated
 import com.marcinmejner.czytnikreddit.di.DaggerNetworkComponent
 import com.marcinmejner.czytnikreddit.di.NetworkModule
 import com.marcinmejner.czytnikreddit.di.SharedPreferencesModule
@@ -249,10 +239,13 @@ class CommentsActivity : AppCompatActivity() {
             Log.d(TAG, "getUserComment: ; attempting to post comment")
 
             //Post comment retrofit stuff
-            val retrofit = Retrofit.Builder()
-                    .baseUrl(COMMENT_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
+            val commentsRetrofit = DaggerNetworkComponent.builder()
+                    .networkModule(NetworkModule(COMMENT_URL, GsonConverterFactory.create()))
+                    .sharedPreferencesModule(SharedPreferencesModule(this))
                     .build()
+
+
+            val retrofit = commentsRetrofit.getRetrofit()
             val feedAPI2 = retrofit.create(FeedAPI::class.java)
 
             var headerMap = HashMap<String, String>()
@@ -263,7 +256,8 @@ class CommentsActivity : AppCompatActivity() {
             Log.d(TAG, "btnPostComment:  \n" +
                     "username: " + username + "\n" +
                     "modhash: " + modhash + "\n" +
-                    "cookie: " + cookie + "\n"
+                    "cookie: " + cookie + "\n" +
+                    "wydruk z hashmapy ${headerMap["User-Agent"]} + ${headerMap["X-Modhash"]}"
             )
 
             var com = comment.text.toString()
@@ -271,7 +265,7 @@ class CommentsActivity : AppCompatActivity() {
             val call = feedAPI2.submitComment(headerMap, "comment", post_id, com)
             call.enqueue(object : Callback<CheckComment>{
 
-                override fun onResponse(call: Call<CheckComment>?, response: Response<CheckComment>?) {
+                override fun onResponse(call: Call<CheckComment>, response: Response<CheckComment>?) {
                     Log.d(TAG, "onResponse: feed ${response?.body()?.toString()}")
                     Log.d(TAG, "onResponse: Server Response ${response.toString()}")
                     Log.d(TAG, "onResponse: succesful =  ${response?.body()?.success!!}")

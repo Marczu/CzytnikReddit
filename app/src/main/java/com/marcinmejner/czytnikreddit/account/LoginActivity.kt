@@ -82,6 +82,9 @@ class LoginActivity : AppCompatActivity() {
                 .build()
         loginComponent.inject(this)
 
+
+
+
         val headerMap = HashMap<String, String>()
         headerMap.put("Content-Type", "application/json")
 
@@ -92,17 +95,22 @@ class LoginActivity : AppCompatActivity() {
                 Log.d(TAG, "onResponse: feed ${response?.body()?.toString()}")
                 Log.d(TAG, "onResponse: Server Response ${response.toString()}")
 
-                val modhash = response?.body()?.json?.data?.modhash
+                val modhash: String? = response?.body()?.json?.data?.modhash
                 val cookie = response?.body()?.json?.data?.cookie
                 Log.d(TAG, "onResponse: modhash = $modhash \n cookie = $cookie")
 
-                if (!modhash?.equals("")!!) {
+                if (modhash != null) {
                     setSessionParams(username, modhash, cookie!!)
                     progressBar.visibility = View.GONE
                     loginInputName.setText("")
                     loginInputPassword.setText("")
                     Toast.makeText(this@LoginActivity, "Login Succesful", Toast.LENGTH_LONG).show()
                     finish()
+                }else{
+                    Log.d(TAG, "onResponse: login failed")
+                    setSessionParams(username, "", "")
+                    Toast.makeText(this@LoginActivity, "Login unsuccessful", Toast.LENGTH_LONG).show()
+                    progressBar.visibility = View.GONE
                 }
             }
 

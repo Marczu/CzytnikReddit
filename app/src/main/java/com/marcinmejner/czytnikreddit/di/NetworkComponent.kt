@@ -4,6 +4,7 @@ import com.marcinmejner.czytnikreddit.comments.CommentsActivity
 import com.marcinmejner.czytnikreddit.MainActivity
 import com.marcinmejner.czytnikreddit.account.LoginActivity
 import dagger.Component
+import retrofit2.Retrofit
 import javax.inject.Singleton
 
 
@@ -20,5 +21,8 @@ interface NetworkComponent {
     fun inject(commentsActivity: CommentsActivity)
 
     fun inject(loginActivity: LoginActivity)
+
+
+    fun getRetrofit(): Retrofit
 
 }
