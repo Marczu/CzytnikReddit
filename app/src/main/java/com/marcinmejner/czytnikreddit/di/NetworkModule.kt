@@ -9,12 +9,12 @@ import dagger.Provides
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
-import javax.inject.Named
 import javax.inject.Singleton
 
 
 @Module
 class NetworkModule(var url: String, val factory: Converter.Factory) {
+
 
     @Provides
     @NetworkScope
@@ -24,6 +24,4 @@ class NetworkModule(var url: String, val factory: Converter.Factory) {
                 .addConverterFactory(factory)
                 .build()
     }
-
-
 }
