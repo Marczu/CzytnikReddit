@@ -12,7 +12,8 @@
         app:contentPaddingRight="10dp"
         app:contentPaddingLeft="10dp"
         app:cardMaxElevation="10dp"
-        android:elevation="10dp">
+        android:elevation="10dp"
+        android:background="@drawable/gray_border">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -26,8 +27,8 @@
                     android:id="@+id/Comment"
                     android:gravity="center_vertical"
                     android:text="comment"
+                    android:textColor="@color/primary_text"
                     android:layout_marginTop="4dp"
-                    android:textStyle="bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

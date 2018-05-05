@@ -71,10 +71,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:layout_marginTop="24dp"
-                android:backgroundTint="@color/colorAccent"
+                android:background="@drawable/blue_rounded_button"
                 android:padding="12dp"
                 android:text="Login"
-                android:textColor="#FFF" />
+                android:textColor="@color/primary_text" />
 
 
 

@@ -15,7 +15,8 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar_main"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@drawable/blue_border">
 
 
 
@@ -45,8 +46,8 @@
                 android:textAlignment="center"
                 android:text="reply"
                 android:textSize="8dp"
-                android:backgroundTint="@color/colorAccent"
-                android:textColor="#FFF"
+                android:background="@drawable/blue_rounded_button"
+                android:textColor="@color/primary_text"
                 android:layout_alignParentRight="true"
                 android:layout_alignBottom="@+id/postThumbnail"
                 android:layout_marginRight="10dp"/>

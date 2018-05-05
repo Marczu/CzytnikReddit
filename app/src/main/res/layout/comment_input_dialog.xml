@@ -19,8 +19,7 @@
 
         <android.support.v7.widget.AppCompatButton
             android:layout_width="wrap_content"
-            android:textColor="#FFF"
-            android:backgroundTint="@color/colorAccent"
+            android:textColor="@color/primary_text"
             android:layout_height="0dp"
             android:layout_weight="10"
             android:text="Post Comment"
@@ -29,7 +28,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:id="@+id/dialogPostCommentBtn"
-            android:textSize="10sp"/>
+            android:textSize="10sp"
+            android:background="@drawable/blue_rounded_button"/>
 
 
 
