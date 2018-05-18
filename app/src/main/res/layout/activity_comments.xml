@@ -41,7 +41,7 @@
             
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btnPostReply"
-                android:layout_width="50dp"
+                android:layout_width="45dp"
                 android:layout_height="30dp"
                 android:textAlignment="center"
                 android:text="reply"

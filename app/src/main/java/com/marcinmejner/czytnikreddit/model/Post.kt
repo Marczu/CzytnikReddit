@@ -6,5 +6,4 @@ class Post(
         var date_updated: String,
         var postURL: String,
         var thumbnailURL: String,
-        var id: String) {
-}
+        var id: String)
