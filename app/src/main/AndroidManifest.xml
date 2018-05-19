@@ -21,7 +21,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".account.LoginActivity"></activity>
+        <activity android:name=".account.LoginActivity" />
+        <activity
+            android:name=".NavigationFavorites"
+            android:label="@string/title_activity_navigation_favorites"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
