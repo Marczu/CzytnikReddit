@@ -25,7 +25,7 @@ class ExtractXML(
 
         Log.d(TAG, "start: $splitXml")
         val count = splitXml.size
-        Log.d(TAG, "start: splitXml.size to : $count ")
+        Log.d(TAG, "start: splitXml.size to  : $count ")
 
         for(i in 1 until count){
             var temp = splitXml[i]

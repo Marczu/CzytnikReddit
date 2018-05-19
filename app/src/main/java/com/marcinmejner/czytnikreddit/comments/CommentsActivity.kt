@@ -127,7 +127,7 @@ class CommentsActivity : AppCompatActivity() {
         call.enqueue(object : Callback<Feed> {
             override fun onResponse(call: Call<Feed>, response: Response<Feed>) {
                 val entrys = response.body()?.entrys
-                for (i in 0 until entrys!!.size) {
+                for (i in 1 until entrys!!.size) {
                     Log.d(TAG, "onResponse: ${entrys[i]} ")
                     val extract = ExtractXML(entrys[i].content!!, "<div class=\"md\"><p>", "</p>" )
                     Log.d(TAG, "onResponse: ${extract.start()}")
