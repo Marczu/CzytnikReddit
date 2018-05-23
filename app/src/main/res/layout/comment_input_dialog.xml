@@ -25,7 +25,7 @@
             android:text="Post Comment"
             android:textAlignment="center"
             android:layout_marginBottom="5dp"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="15dp"
             android:layout_marginTop="5dp"
             android:id="@+id/dialogPostCommentBtn"
             android:textSize="10sp"
